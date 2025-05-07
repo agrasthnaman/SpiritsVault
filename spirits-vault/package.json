@@ -8,7 +8,8 @@
     "seed": "ts-node src/shared/utils/seedDatabase.ts",
     "setup": "npm install && tsc && npm run seed && npm run dev",
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "start:dev": "docker-compose up -d && npm run dev"
   },
   "keywords": [],
   "author": "",

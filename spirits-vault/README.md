@@ -2,62 +2,9 @@
 
 A social platform for alcohol enthusiasts to share, discover, and showcase their favorite spirits.
 
-## Architecture
-
-This project is currently being restructured to follow a modular, domain-driven approach with clean architecture principles. The target architecture is:
-
-```
-src/
-├── modules/                # Feature modules grouped by domain
-│   ├── users/              # User domain module
-│   │   ├── domain/         # Business domain layer
-│   │   │   ├── entities/   # Core domain entities
-│   │   │   └── value-objects/ # Value objects with validation
-│   │   ├── infrastructure/ # Implementation layer
-│   │   │   ├── dao/        # Data Access Objects (direct DB access)
-│   │   │   ├── repositories/ # Repository implementations
-│   │   │   ├── services/   # Business logic services
-│   │   │   └── controllers/ # HTTP controllers
-│   │   └── interfaces/     # Interface layer
-│   │       ├── dto/        # Data Transfer Objects
-│   │       └── IUserRepository.ts # Repository interfaces
-│   ├── spirits/            # Spirits domain module (similar structure)
-│   └── posts/              # Posts domain module (similar structure)
-├── shared/                 # Shared utilities and base classes
-│   ├── utils/              # Utility functions
-│   ├── middleware/         # Application middleware
-│   ├── base-classes/       # Base abstract classes
-│   └── types/              # Common types and interfaces
-├── config/                 # Configuration files
-├── server.ts               # Express server setup
-└── index.ts                # App entry point
-```
-
 ### Current Status
 
 The project is in transition from a traditional layered architecture to a modular domain-driven structure. Files are being migrated incrementally to the new structure while maintaining functionality.
-
-### Architectural Layers
-
-1. **Domain Layer**
-   - Contains business logic and rules
-   - Entities and value objects are the core of the application
-   - Independent of other layers and frameworks
-
-2. **Infrastructure Layer**
-   - Implementation of interfaces defined in domain layer
-   - Contains database access logic, external services, etc.
-   - Adapts external concerns to domain layer
-
-3. **Interface Layer**
-   - Defines interfaces and contracts
-   - Data Transfer Objects (DTOs) for API communication
-   - Repository interfaces that domain services depend on
-
-4. **Application Layer (Controllers)**
-   - Handles HTTP requests and responses
-   - Uses services from domain layer
-   - Translates between domain and external formats using DTOs
 
 ### Data Flow
 
@@ -81,22 +28,32 @@ API/Controller → Service → Repository → DAO
    ```bash
    cp .env.example .env
    ```
-4. Start MongoDB with Docker:
+4. Start MongoDB and run the server with a single command:
+   ```bash
+   npm run start:dev
+   ```
+
+Alternatively, you can start services separately:
+
+1. Start MongoDB with Docker:
    ```bash
    docker-compose up -d
    ```
-5. Run the development server:
+2. Run the development server:
    ```bash
    npm run dev
    ```
 
 ## Scripts
 
-- `npm start` - Run the production server
+- `npm run start` - Run the production server
 - `npm run dev` - Run the development server
 - `npm run build` - Build the application
 - `npm run seed` - Seed the database with sample data
 - `npm run setup` - Install dependencies, build, seed and run the application
+- `npm run start:dev` - Start MongoDB container and run the development server (recommended for local development)
+
+> **Note:** Always use `npm run script-name` to execute scripts, not just `npm script-name`. For example, use `npm run start:dev` instead of `npm start:dev`.
 
 ## Technologies
 
@@ -131,7 +88,7 @@ API/Controller → Service → Repository → DAO
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/yourusername/spirits-vault.git
+git clone https://github.com/agrasthnaman/spirits-vault.git
 cd spirits-vault
 ```
 
@@ -152,7 +109,17 @@ JWT_SECRET=your_jwt_secret_key_here
 NODE_ENV=development
 ```
 
-4. **Set up MongoDB with Docker**
+4. **Quick Start**
+
+For the fastest way to get up and running with both MongoDB and the server:
+
+```bash
+npm run start:dev  # Important: use 'npm run', not just 'npm'
+```
+
+Alternatively, you can follow the steps below for a more manual approach:
+
+5. **Set up MongoDB with Docker**
 
 We use Docker to run MongoDB locally for development. This makes the setup process easier and consistent across different development environments.
 
@@ -162,13 +129,13 @@ docker-compose up -d
 
 This command starts a MongoDB container on port 27017.
 
-5. **Start the development server**
+6. **Start the development server**
 
 ```bash
 npm run dev
 ```
 
-6. **Or use the all-in-one setup command** (excluding Docker setup)
+7. **Or use the all-in-one setup command** (excluding Docker setup)
 
 ```bash
 npm run setup

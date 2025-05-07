@@ -4,7 +4,7 @@ A social platform for alcohol enthusiasts to share, discover, and showcase their
 
 ## Architecture
 
-This application follows a modular, domain-driven approach with clean architecture principles:
+This project is currently being restructured to follow a modular, domain-driven approach with clean architecture principles. The target architecture is:
 
 ```
 src/
@@ -32,6 +32,10 @@ src/
 ├── server.ts               # Express server setup
 └── index.ts                # App entry point
 ```
+
+### Current Status
+
+The project is in transition from a traditional layered architecture to a modular domain-driven structure. Files are being migrated incrementally to the new structure while maintaining functionality.
 
 ### Architectural Layers
 
@@ -77,7 +81,11 @@ API/Controller → Service → Repository → DAO
    ```bash
    cp .env.example .env
    ```
-4. Run the development server:
+4. Start MongoDB with Docker:
+   ```bash
+   docker-compose up -d
+   ```
+5. Run the development server:
    ```bash
    npm run dev
    ```
@@ -96,6 +104,7 @@ API/Controller → Service → Repository → DAO
 - TypeScript
 - MongoDB with Mongoose
 - JWT Authentication
+- Docker for local development
 
 ## Features
 
@@ -108,13 +117,14 @@ API/Controller → Service → Repository → DAO
 ## Tech Stack
 
 - **Backend**: Node.js with Express
-- **Database**: MongoDB
+- **Database**: MongoDB (Docker container for local development)
 - **Authentication**: JWT
 
 ## Prerequisites
 
 - Node.js (v14 or higher)
-- MongoDB (running locally or a MongoDB Atlas account)
+- Docker and Docker Compose
+- Git
 
 ## Setup Instructions
 
@@ -142,13 +152,15 @@ JWT_SECRET=your_jwt_secret_key_here
 NODE_ENV=development
 ```
 
-4. **Seed the database**
+4. **Set up MongoDB with Docker**
 
-This will populate the database with sample spirits, users, and posts:
+We use Docker to run MongoDB locally for development. This makes the setup process easier and consistent across different development environments.
 
 ```bash
-npm run seed
+docker-compose up -d
 ```
+
+This command starts a MongoDB container on port 27017.
 
 5. **Start the development server**
 
@@ -156,37 +168,79 @@ npm run seed
 npm run dev
 ```
 
-6. **Or use the all-in-one setup command**
+6. **Or use the all-in-one setup command** (excluding Docker setup)
 
 ```bash
 npm run setup
 ```
 
+## Why Docker for MongoDB?
+
+We chose to use Docker for local MongoDB development instead of a MongoDB Atlas cluster for several reasons:
+
+1. **Development Simplicity**: Docker provides a consistent environment for all developers without the need for an internet connection during development
+2. **Zero External Dependencies**: No need to manage cloud credentials or worry about usage limits
+3. **Performance**: Local databases are faster for development without network latency
+4. **Cost**: Free for development, no cloud hosting costs
+5. **Data Privacy**: All data stays on your local machine
+
+For production deployment, you can easily switch to MongoDB Atlas or any other cloud provider by updating the `MONGODB_URI` in your environment variables.
+
+## API Examples
+
+Here are some example curl commands to interact with the API:
+
+### Welcome Route
+```bash
+curl http://localhost:3000/
+```
+
+### Register a New User
+```bash
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username": "testuser", "email": "test@example.com", "password": "password123", "name": "Test User"}'
+```
+
+### Login
+```bash
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@example.com", "password": "password123"}'
+```
+
+### Get User Profile (Authenticated)
+```bash
+curl -X GET http://localhost:3000/api/users/profile \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Update User Profile (Authenticated)
+```bash
+curl -X PUT http://localhost:3000/api/users/profile \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{"name": "Updated Test User", "bio": "I love spirits!"}'
+```
+
+### Get User's Spirit Collection (Authenticated)
+```bash
+curl -X GET http://localhost:3000/api/users/collection \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
 ## API Endpoints
 
 ### Authentication
-
 - **POST /api/auth/register** - Register a new user
 - **POST /api/auth/login** - Login user
 
-## Project Structure
-
-The project follows a Domain-Driven Design approach:
-
-```
-src/
-├── api/                # API Routes and Controllers
-├── config/             # Configuration files
-├── domain/             # Domain models, repositories, and services
-│   ├── models/         # Database models
-│   ├── repositories/   # Data access layer
-│   └── services/       # Business logic
-├── infrastructure/     # Infrastructure code
-│   ├── database/       # Database connection
-│   └── middlewares/    # Middleware functions
-├── utils/              # Utility functions
-└── server.js           # Main application file
-```
+### User Management
+- **GET /api/users/profile** - Get user profile
+- **PUT /api/users/profile** - Update user profile
+- **GET /api/users/collection** - Get user's spirit collection
+- **POST /api/users/collection** - Add a spirit to user's collection
+- **DELETE /api/users/collection/:spiritId** - Remove a spirit from user's collection
 
 ## License
 
